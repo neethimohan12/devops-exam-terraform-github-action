@@ -26,7 +26,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials from I AM Role
+      - name: Configure AWS credentials from IAM Role
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
@@ -55,6 +55,6 @@ jobs:
             echo "Applying changes..."
             terraform apply -auto-approve tfplan
           else
-            echo "Invalid action: ${GITHUB_EVENT_INPUTS_ACTION}"
+            echo "Invalid action: ${{ github.event.inputs.action }}"
             exit 1
           fi

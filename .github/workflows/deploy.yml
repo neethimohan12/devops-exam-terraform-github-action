@@ -8,7 +8,7 @@ on:
     inputs:
       action:
         description: "Choose the action: apply or destroy"
-        required: true
+        required: false
         default: "apply"
         options:
           - apply
@@ -26,7 +26,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials from IAM Role
+      - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
@@ -51,10 +51,7 @@ jobs:
           if [ "${{ github.event.inputs.action }}" == "destroy" ]; then
             echo "Destroying infrastructure..."
             terraform destroy -auto-approve
-          elif [ "${{ github.event.inputs.action }}" == "apply" ]; then
+          else
             echo "Applying changes..."
             terraform apply -auto-approve tfplan
-          else
-            echo "Invalid action: ${{ github.event.inputs.action }}"
-            exit 1
           fi
